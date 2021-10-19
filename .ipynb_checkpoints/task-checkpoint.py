@@ -56,9 +56,9 @@ def data_to_csv():
 
 def extract_data_from_invoice_images():
     for row in listOfRows:
-        driver.get(row["Invoice"])
+        driver.go_to(row["Invoice"])
         # Download the image from the site
-        src = driver.find_element(By.TAG_NAME, 'img').get_attribute('src')
+        src = driver.find_element('tag:img').get_attribute('src')
         urllib.request.urlretrieve(src, f'./temp/{listOfRows[0]["ID"]}.png')
         invoice = Image.open(f'./temp/{listOfRows[0]["ID"]}.png')
         # Use tesseract-ocr lib to extract text from the image
@@ -67,7 +67,8 @@ def extract_data_from_invoice_images():
         extracted_str = [line for line in extracted_str if line.strip() != '']
         # Replace the Invoice with extracted data in a Dictationary
         row["Invoice"] = grab_relevant_data(extracted_str)
-    driver.get(main_page_url)
+    print("Finished extracting data")
+    driver.go_to(main_page_url)
 
 
 def grab_relevant_data(extracted_str):

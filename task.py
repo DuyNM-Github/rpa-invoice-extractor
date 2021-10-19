@@ -67,6 +67,7 @@ def extract_data_from_invoice_images():
         extracted_str = [line for line in extracted_str if line.strip() != '']
         # Replace the Invoice with extracted data in a Dictationary
         row["Invoice"] = grab_relevant_data(extracted_str)
+    print("Finished extracting data")
     driver.go_to(main_page_url)
 
 
