@@ -110,7 +110,7 @@ def clean_temp():
 
 
 if __name__ == "__main__":
+    clean_temp()
     get_invoice_list()
     extract_data_from_invoice_images()
     data_to_csv()
-    clean_temp()

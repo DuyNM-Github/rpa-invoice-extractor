@@ -1912,3 +1912,5 @@ JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_
 console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilerON4uv/search.json.mozlz4", (void 0)))
 1634639711214	Marionette	INFO	Listening on port 37965
 1634639711336	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.log: WebExtensions: reset-default-search: starting.
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
