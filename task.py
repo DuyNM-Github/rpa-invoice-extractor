@@ -1,6 +1,6 @@
 # +
 """Template robot with Python."""
-from selenium import webdriver
+from RPA.Browser.Selenium import Selenium
 from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
 from RPA.FileSystem import FileSystem
@@ -10,23 +10,23 @@ import urllib.request
 import re
 import os, shutil
 
-driver = Firefox()
+driver = Selenium()
 listOfRows = []
 listOfCompAbbreviation = ["ASSOC", "BROS", "CIE", "CORP", "CO", "INC",
                           "LTD", "MFG", "MFRS", "JSC", "LLC"]
 date_regex = r"(?:[0-9]{4}\/*[0-9]{2}\/*[0-9]{2})|(?:[0-9]{4}-*[0-9]{2}-*[0-9]{2})|(?:[A-Za-z]{3}.[0-9]{1,2}.*[0-9]{4})|(?:[0-9]{2}.*[A-Za-z]{3}.*[0-9]{4}$)"
 main_page_url = "http://rpachallengeocr.azurewebsites.net"
 
-driver.get(main_page_url)
+driver.open_available_browser(main_page_url)
 
 
 # -
 
 def get_invoice_list():
-    next_button = driver.find_element(By.CLASS_NAME, "next")
-    table_row = driver.find_elements_by_xpath('//*[@id="tableSandbox"]/tbody/tr')
+    next_button = driver.get_webelement("class:next")
+    table_row = driver.find_elements('xpath://*[@id="tableSandbox"]/tbody/tr')
     for index in range(1, len(table_row) + 1, 1):
-        row_data = driver.find_elements_by_xpath(f'//*[@id="tableSandbox"]/tbody/tr[{index}]/td')
+        row_data = driver.find_elements(f'xpath://*[@id="tableSandbox"]/tbody/tr[{index}]/td')
         data_dict = {
                         "ID": row_data[1].text,
                         "DueDate": row_data[2].text,
@@ -56,9 +56,9 @@ def data_to_csv():
 
 def extract_data_from_invoice_images():
     for row in listOfRows:
-        driver.get(row["Invoice"])
+        driver.go_to(row["Invoice"])
         # Download the image from the site
-        src = driver.find_element(By.TAG_NAME, 'img').get_attribute('src')
+        src = driver.find_element('tag:img').get_attribute('src')
         urllib.request.urlretrieve(src, f'./temp/{listOfRows[0]["ID"]}.png')
         invoice = Image.open(f'./temp/{listOfRows[0]["ID"]}.png')
         # Use tesseract-ocr lib to extract text from the image
@@ -67,7 +67,7 @@ def extract_data_from_invoice_images():
         extracted_str = [line for line in extracted_str if line.strip() != '']
         # Replace the Invoice with extracted data in a Dictationary
         row["Invoice"] = grab_relevant_data(extracted_str)
-    driver.get(main_page_url)
+    driver.go_to(main_page_url)
 
 
 def grab_relevant_data(extracted_str):
