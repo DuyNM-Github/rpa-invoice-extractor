@@ -11,6 +11,7 @@ import re
 import os, shutil
 
 driver = Selenium()
+lib = FileSystem()
 listOfRows = []
 listOfCompAbbreviation = ["ASSOC", "BROS", "CIE", "CORP", "CO", "INC",
                           "LTD", "MFG", "MFRS", "JSC", "LLC"]
@@ -21,6 +22,15 @@ driver.open_available_browser(main_page_url)
 
 
 # -
+
+def initial_check():
+    if lib.does_directory_exist('./temp') is False:
+        lib.create_directory('./temp', exist_ok=True)
+    if lib.does_directory_exist('./output') is False:
+        lib.create_directory('./output', exist_ok=True)
+    if driver.is_element_visible("class:next") is False:
+        driver.go_to(main_page_url)
+
 
 def get_invoice_list():
     next_button = driver.get_webelement("class:next")
@@ -41,7 +51,6 @@ def get_invoice_list():
 
 def data_to_csv():
     header = "ID,DueDate,InvoiceNumber,InvoiceDate,CompanyName,Total\n"
-    lib = FileSystem()
     lib.create_file("output/invoices", content=None, encoding='utf-8', overwrite=True)
     lib.append_to_file("output/invoices", header, encoding='utf-8')
     for row in listOfRows:
@@ -113,7 +122,8 @@ def clean_temp():
 
 
 if __name__ == "__main__":
-    clean_temp()
+    initial_check()
     get_invoice_list()
     extract_data_from_invoice_images()
     data_to_csv()
+    clean_temp()
