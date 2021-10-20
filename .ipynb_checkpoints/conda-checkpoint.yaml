@@ -13,4 +13,6 @@ dependencies:
     # Define pip packages here. 
     # https://pypi.org/
     - rpaframework==11.1.3 # https://rpaframework.org/releasenotes.html
-    - pytesseract
+    - pytesseract==0.3.8
+    - tesseract-ocr==4.1.1
+    - Pillow==8.4.0
